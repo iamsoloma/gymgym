@@ -21,3 +21,8 @@ CREATE TABLE sets (
     finished_at  TIMESTAMPTZ NOT NULL,
     CHECK (finished_at > started_at)
 );
+
+CREATE TABLE user_weights (
+    date        DATE PRIMARY KEY,
+    weight_kg   NUMERIC(5,1) NOT NULL CHECK (weight_kg > 0)
+)
