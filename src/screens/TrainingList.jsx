@@ -1,3 +1,5 @@
+import { downloadCsv } from '../db.js'
+
 export default function TrainingList({ db, onStart, onOpenTraining}) {
   // Сортируем от новых к старым
   const trainings = [...db.trainings].sort((a, b) => b.date.localeCompare(a.date))
@@ -6,7 +8,10 @@ export default function TrainingList({ db, onStart, onOpenTraining}) {
   return (
     <div className="screen">
       <h1>Мои тренировки</h1>
-      <button className="btn-primary" onClick={onStart}>+ Новая тренировка</button>
+      <div className="actions-row">
+        <button className="btn-primary" onClick={onStart}>+ Новая тренировка</button>
+        <button className="btn-secondary" onClick={() => downloadCsv(db)}>Скачать CSV</button>
+      </div>
 
       {trainings.length === 0 && <p className="empty">Пока нет записей. Начни первую тренировку!</p>}
 
