@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import TrainingList from './screens/TrainingList.jsx'
 import ActiveWorkout from './screens/ActiveWorkout.jsx'
-import { loadDb, saveDb } from './db.js'
+import { loadDb, saveDb } from './data/db.js'
+import { createTraining } from './data/repository.js'
+
+// Стили корневого контейнера живут здесь же, отдельного CSS-файла нет
+const appStyle = {
+  maxWidth: 640,
+  margin: '0 auto',
+  padding: 16,
+  boxSizing: 'border-box',
+}
 
 export default function App() {
   // db — вся "база" в состоянии React
@@ -20,20 +29,18 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div style={appStyle}>
       {activeTrainingId === null ? (
         <TrainingList
           db={db}
           onStart={() => {
-            const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD из браузера
             let id
             updateDb((d) => {
-              id = d.nextId.training++
-              d.trainings.push({ id, date: today })
+              id = createTraining(d)
             })
             setActiveTrainingId(id)
           }}
-          onOpenTraining={(id)=>setActiveTrainingId(id)}
+          onOpenTraining={(id) => setActiveTrainingId(id)}
         />
       ) : (
         <ActiveWorkout
