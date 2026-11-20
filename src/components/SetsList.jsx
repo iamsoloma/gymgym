@@ -19,12 +19,12 @@ export default function SetsList({ db, sets, onSaveEdit, onDelete }) {
     <>
       <h2 style={styles.h2}>Подходы ({sets.length})</h2>
       <ul style={styles.list}>
-        {sets.map((s, i) => (
+        {[...sets].reverse().map((s, i) => (
           <SetItem
             key={s.id}
             db={db}
             set={s}
-            index={i}
+            index={sets.length - 1 - i}
             onSaveEdit={onSaveEdit}
             onDelete={onDelete}
           />

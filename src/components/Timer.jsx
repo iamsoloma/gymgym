@@ -38,20 +38,24 @@ const styles = {
 }
 
 export default function Timer({ startedAt, onToggle }) {
-  // eslint-disable-next-line react-hooks/purity
-  const [now, setNow] = useState(Date.now()) // для перерисовки секундомера
+  // «Сейчас» для перерисовки секундомера; тикает только пока идёт подход
+  const [now, setNow] = useState(() => Date.now())
   // Инлайн-стили не поддерживают :active, поэтому нажатие кнопки отслеживаем состоянием
   const [pressed, setPressed] = useState(false)
-  const running = startedAt ? new Date(startedAt) : null
+  const running = Boolean(startedAt)
 
-  // Каждые полсекунды обновляем now, пока идёт таймер — секундомер "тикает"
+  // Пока идёт таймер — раз в 250 мс обновляем now, секундомер "тикает"
   useEffect(() => {
-    if (!running) return
-    const t = setInterval(() => setNow(Date.now()), 500)
+    if (!startedAt) return
+    const t = setInterval(() => setNow(Date.now()), 250)
     return () => clearInterval(t)
   }, [startedAt])
 
-  const elapsed = running ? Math.floor((now - running.getTime()) / 1000) : 0
+  // Считаем от момента старта и не уходим в минус: сразу после нажатия «Старт»
+  // now ещё равен времени прошлого рендера, то есть может быть раньше startedAt
+  const elapsed = startedAt
+    ? Math.max(0, Math.floor((now - new Date(startedAt).getTime()) / 1000))
+    : 0
 
   return (
     <div style={styles.block}>
